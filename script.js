@@ -1,6 +1,7 @@
 let n = Number(document.getElementById("size").value);
 let T = Number(document.getElementById('temp').value);
 let J = Number(document.getElementById('J').value);
+let B = Number(document.getElementById('B').value);
 let mode = document.getElementById('showenergies').checked;
 let grid = [];
 let AlgorithmLoop;
@@ -108,13 +109,8 @@ const getEnergyEpsilon = (pos) => {
         getSpin(addPos(pos, { x: -1, y: 0 })) +
         getSpin(addPos(pos, { x: 0, y: 1 })) +
         getSpin(addPos(pos, { x: 0, y: -1 }))
-        // + 0.5*(
-        //     getSpin(addPos(pos, { x: 1, y: 1 })) +
-        //     getSpin(addPos(pos, { x: -1, y: 1 })) +
-        //     getSpin(addPos(pos, { x: -1, y: -1 })) +
-        //     getSpin(addPos(pos, { x: 1, y: -1 }))
-        // )
-    );
+    ) + 
+    2 * getSpin(pos) * B;
 }
 
 const displayPixel = (i, j) => {
@@ -147,11 +143,13 @@ AlgorithmLoop = setInterval(() => {
     T = Number(document.getElementById('temp').value);
     J = Number(document.getElementById('J').value);
     colorNormalization = Math.abs(255/(16*J));
+    B = Number(document.getElementById('B').value);
 
     mode = document.getElementById('showenergies').checked;
     document.getElementById("JLabel").innerHTML = `Ferromagnetivity Constant J: ${J}`;
     document.getElementById("sizeLabel").innerHTML = `Substance Side Length: ${n}<br>(Updates on Reset)`;
     document.getElementById("tempLabel").innerHTML = `Substance Temperature: ${T} Kelvin`;
+    document.getElementById("BLabel").innerHTML = `Magnetic Field Strength: ${B}`;
 
     if (running) {
         let pos = {x: Math.floor((n)*Math.random()), y: Math.floor((n)*Math.random())};

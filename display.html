@@ -11,7 +11,7 @@
         <canvas id="myCanvas"></canvas>
         <div id="settings">
             <br><br>
-            <input type="button" id="play" value="Toggle Running" onclick="togglePlay()">
+            <input type="button" id="play" value="Toggle Running" onclick="togglePlay()" style="margin-top: 10px;">
             <input type="button" id="reset" value="Reset" onclick="reset()">
             <div id="running-settings">
                 <label for="size" id="sizeLabel">Substance Side Length<br>(Updates on Reset)</label>
@@ -22,6 +22,9 @@
 
                 <label for="J" id="JLabel">Ferromagnetivity Constant J</label>
                 <input type="range" id="J" min="-100" max="100" value="1" step="1" onchange="displayGrid()">
+
+                <label for="B" id="BLabel">Magnetic Field Strength</label>
+                <input type="range" id="B" min="-100" max="100" value="1" step="1" onchange="displayGrid()">
 
                 <label for="showenergies">Show Relative Energy Change</label>
                 <input type="checkbox" id="showenergies" value=true onchange="displayGrid()">
