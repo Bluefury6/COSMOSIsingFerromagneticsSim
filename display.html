@@ -15,13 +15,13 @@
             <input type="button" id="reset" value="Reset" onclick="reset()">
             <div id="running-settings">
                 <label for="size" id="sizeLabel">Substance Side Length<br>(Updates on Reset)</label>
-                <input type="range" id="size" min="1" max="100" value="25" step = 1>
+                <input type="range" id="size" min="1" max="100" value="25" step="1" onchange="displayGrid()">
 
                 <label for="temp" id="tempLabel">Substance Temperature</label>
-                <input type="range" id="temp" min="1" max="100" value="1" step="1">
+                <input type="range" id="temp" min="1" max="100" value="1" step="1" onchange="displayGrid()">
 
                 <label for="J" id="JLabel">Ferromagnetivity Constant J</label>
-                <input type="range" id="J" min="-100" max="100" value="1" step="1">
+                <input type="range" id="J" min="-100" max="100" value="1" step="1" onchange="displayGrid()">
 
                 <label for="showenergies">Show Relative Energy Change</label>
                 <input type="checkbox" id="showenergies" value=true onchange="displayGrid()">

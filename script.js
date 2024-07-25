@@ -25,7 +25,7 @@ if (screen.width >= screen.height) {
 canvas.width = width;
 canvas.height = height;
 
-let uWidth = width / n;
+let uWidth = Math.floor(width / n) + 1;
 
 ctx.fillStyle = "rgb(0,0,0)";
 for (let i = 0; i < n; i++) {
@@ -86,7 +86,7 @@ const togglePlay = () => {
 const reset = () => {
     running = false;
     n = Number(document.getElementById("size").value);
-    uWidth = width / n;
+    uWidth = Math.floor(width / n) + 1;
 
     ctx.fillStyle = "rgb(0,0,0)";
     grid = [];
@@ -117,6 +117,33 @@ const getEnergyEpsilon = (pos) => {
     );
 }
 
+const displayPixel = (i, j) => {
+    if (!mode) {
+        let spin = grid[j][i];
+        if (spin == -1) {
+            ctx.fillStyle = "rgb(0,0,0)";
+        } else {
+            ctx.fillStyle = "rgb(255,255,255)";
+        }
+        ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
+    } else {
+        for (let X = i - 1; X <= i + 1; X++) {
+            for (let Y = i - 1; Y <= j + 1; Y++) {
+                let pos = {x: X, y: Y};
+                let energyEpsilon = getEnergyEpsilon(pos);
+                if (energyEpsilon < 0) {
+                    ctx.fillStyle = `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)`;
+                    console.log(-colorNormalization*(energyEpsilon));
+                } else {
+                    ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
+                    console.log(colorNormalization*(energyEpsilon));
+                }
+                ctx.fillRect(X*uWidth, Y*uWidth, uWidth + 1, uWidth + 1);
+            }
+        }
+    }
+}
+
 displayGrid();
 AlgorithmLoop = setInterval(() => {
     T = Number(document.getElementById('temp').value);
@@ -134,11 +161,11 @@ AlgorithmLoop = setInterval(() => {
 
         if (energyEpsilon < 0) {
             grid[pos["y"]][pos["x"]] *= -1;
-            displayGrid();
+            displayPixel(pos['x'], pos['y']);
         } else {
             if (Math.random() < Math.exp(-(energyEpsilon / T))) {
                 grid[pos["y"]][pos["x"]] *= -1;
-                displayGrid();
+                displayPixel(pos['x'], pos['y']);
             }
         }
     }
