@@ -1,23 +1,26 @@
-let n = 35;
-let T = 1
-let J = 1;
-let mode = true;
+let n = Number(document.getElementById("size").value);
+let T = Number(document.getElementById('temp').value);
+let J = Number(document.getElementById('J').value);
+let mode = document.getElementById('showenergies').checked;
+let grid = [];
+let AlgorithmLoop;
+let running = false;
+let colorNormalization = Math.abs(255/(16*J));
 
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
 let width, height;
 
-// if (screen.width >= screen.height) {
-//     width = screen.height*0.7;
-//     height = screen.height*0.7;
-// } else {
-//     width = screen.width*0.7;
-//     height = screen.width*0.7;
-// }
-
-width = window.innerHeight;
-height = window.innerHeight;
+if (screen.width >= screen.height) {
+    width = window.innerHeight;
+    height = window.innerHeight;
+    document.getElementById("site").style.setProperty('flex-direction', 'row');
+} else {
+    width = screen.width;
+    height = screen.width
+    document.getElementById("site").style.setProperty('flex-direction', 'column');
+}
 
 canvas.width = width;
 canvas.height = height;
@@ -25,11 +28,10 @@ canvas.height = height;
 let uWidth = width / n;
 
 ctx.fillStyle = "rgb(0,0,0)";
-let grid = [];
 for (let i = 0; i < n; i++) {
     let subArr = [];
     for (let j = 0; j < n; j++) {
-        let spin = Math.round(2*Math.random() - 1);
+        let spin = Math.random() > 0.5 ? 1 : -1;
         subArr.push(spin);
     }
     grid.push(subArr);
@@ -49,6 +51,7 @@ const addPos = (pos, pos2) => {
 }
 
 const displayGrid = () => {
+    mode = document.getElementById('showenergies').checked;
     ctx.fillStyle = "rgb(255,255,255)";
     ctx.fillRect(0, 0, 100000, 100000)
     ctx.fillStyle = "rgb(0,0,0)";
@@ -57,56 +60,86 @@ const displayGrid = () => {
             if (!mode) {
                 let spin = grid[j][i];
                 if (spin == -1) {
-                    ctx.fillRect(j*uWidth, i*uWidth, uWidth + 1, uWidth + 1);
+                    ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
                 }
             } else {
-                let pos = {x: j, y: i};
-                let energyEpsilon = 4*J*getSpin(pos)*(
-                    getSpin(addPos(pos, {x: 1, y: 0})) + 
-                    getSpin(addPos(pos, {x: -1, y: 0})) + 
-                    getSpin(addPos(pos, {x: 0, y: 1})) + 
-                    getSpin(addPos(pos, {x: 0, y: -1}))
-                );
+                let pos = {x: i, y: j};
+                let energyEpsilon = getEnergyEpsilon(pos);
                 if (energyEpsilon < 0) {
-                    ctx.fillStyle = `rgb(${-20*(energyEpsilon)}, 0, 0)`;
+                    ctx.fillStyle = `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)`;
+                    console.log(-colorNormalization*(energyEpsilon));
                 } else {
-                    ctx.fillStyle = `rgb(0, 0, ${20*(energyEpsilon)})`;
+                    ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
+                    console.log(colorNormalization*(energyEpsilon));
                 }
-                ctx.fillRect(j*uWidth, i*uWidth, uWidth + 1, uWidth + 1);
+                ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
             }
         }
     }
 }
 
-let num = 0;
 // metropole-hastings algorithm
-const play = () => {
-    let AlgorithmLoop = setInterval(() => {
-        mode = document.getElementById('showenergies').checked;
-        T = document.getElementById('temp').value;
-        J = document.getElementById('J').value;
+const togglePlay = () => {
+    running = !running;
+}
 
-        let pos = {x: Math.round((n - 1)*Math.random()), y: Math.round((n - 1)*Math.random())};
-        let energyEpsilon = 4*J*getSpin(pos)*(
-            getSpin(addPos(pos, {x: 1, y: 0})) + 
-            getSpin(addPos(pos, {x: -1, y: 0})) + 
-            getSpin(addPos(pos, {x: 0, y: 1})) + 
-            getSpin(addPos(pos, {x: 0, y: -1}))
-        );
-    
-        if (energyEpsilon < 0) {
-            grid[pos["y"]][pos["x"]] *= -1;
-        } else {
-            if (Math.random() < 2.71**(-(energyEpsilon / T))) {
-                grid[pos["y"]][pos["x"]] *= -1;
-            }
+const reset = () => {
+    running = false;
+    n = Number(document.getElementById("size").value);
+    uWidth = width / n;
+
+    ctx.fillStyle = "rgb(0,0,0)";
+    grid = [];
+    for (let i = 0; i < n; i++) {
+        let subArr = [];
+        for (let j = 0; j < n; j++) {
+            let spin = Math.random() > 0.5 ? 1 : -1;
+            subArr.push(spin);
         }
-    
-        displayGrid();
-        
-        num++;
-        //console.log(num);
-    }, 0)
+        grid.push(subArr);
+    }
+
+    displayGrid();
+}
+
+const getEnergyEpsilon = (pos) => {
+    return 4 * J * getSpin(pos) * (
+        getSpin(addPos(pos, { x: 1, y: 0 })) +
+        getSpin(addPos(pos, { x: -1, y: 0 })) +
+        getSpin(addPos(pos, { x: 0, y: 1 })) +
+        getSpin(addPos(pos, { x: 0, y: -1 }))
+        // + 0.5*(
+        //     getSpin(addPos(pos, { x: 1, y: 1 })) +
+        //     getSpin(addPos(pos, { x: -1, y: 1 })) +
+        //     getSpin(addPos(pos, { x: -1, y: -1 })) +
+        //     getSpin(addPos(pos, { x: 1, y: -1 }))
+        // )
+    );
 }
 
 displayGrid();
+AlgorithmLoop = setInterval(() => {
+    T = Number(document.getElementById('temp').value);
+    J = Number(document.getElementById('J').value);
+    colorNormalization = Math.abs(255/(16*J));
+
+    mode = document.getElementById('showenergies').checked;
+    document.getElementById("JLabel").innerHTML = `Ferromagnetivity Constant J: ${J}`;
+    document.getElementById("sizeLabel").innerHTML = `Substance Side Length: ${n}<br>(Updates on Reset)`;
+    document.getElementById("tempLabel").innerHTML = `Substance Temperature: ${T} Kelvin`;
+
+    if (running) {
+        let pos = {x: Math.round((n - 1)*Math.random()), y: Math.round((n - 1)*Math.random())};
+        let energyEpsilon = getEnergyEpsilon(pos);
+
+        if (energyEpsilon < 0) {
+            grid[pos["y"]][pos["x"]] *= -1;
+            displayGrid();
+        } else {
+            if (Math.random() < Math.exp(-(energyEpsilon / T))) {
+                grid[pos["y"]][pos["x"]] *= -1;
+                displayGrid();
+            }
+        }
+    }
+    }, 0);

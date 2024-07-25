@@ -7,25 +7,24 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body style="margin: 0px">
-    <div class="site">
+    <div class="site" id="site">
         <canvas id="myCanvas"></canvas>
         <div id="settings">
             <br><br>
-            <input type="button" id="play" value="Play" onclick="play()">
+            <input type="button" id="play" value="Toggle Running" onclick="togglePlay()">
             <input type="button" id="reset" value="Reset" onclick="reset()">
             <div id="running-settings">
-                <div class="settings-title">Settings</div>
-                <label for="size">Substance Side Length</label>
+                <label for="size" id="sizeLabel">Substance Side Length<br>(Updates on Reset)</label>
                 <input type="range" id="size" min="1" max="100" value="25" step = 1>
 
-                <label for="temp">Substance Temperature</label>
-                <input type="range" id="temp" min="1" max="200" value="100" setp="1">
+                <label for="temp" id="tempLabel">Substance Temperature</label>
+                <input type="range" id="temp" min="1" max="100" value="1" step="1">
 
-                <label for="J">Ferromagnetivity Constant J</label>
-                <input type="range" id="J" min="1" max="200" value="100" setp="1">
+                <label for="J" id="JLabel">Ferromagnetivity Constant J</label>
+                <input type="range" id="J" min="-100" max="100" value="1" step="1">
 
                 <label for="showenergies">Show Relative Energy Change</label>
-                <input type="checkbox" id="showenergies" checked>
+                <input type="checkbox" id="showenergies" value=true onchange="displayGrid()">
             </div>
         </div>
     <script src="script.js"></script>
