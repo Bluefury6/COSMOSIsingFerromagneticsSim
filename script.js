@@ -91,6 +91,11 @@ const displayGrid = () => {
 // metropole-hastings algorithm
 const togglePlay = () => {
     running = !running;
+    if (running) {
+        document.getElementById("play").value = "Toggle Running (On)"
+    } else {
+        document.getElementById("play").value = "Toggle Running (Off)"
+    }
 }
 
 const reset = () => {
