@@ -53,26 +53,29 @@ const addPos = (pos, pos2) => {
 
 const displayGrid = () => {
     mode = document.getElementById('showenergies').checked;
+    document.getElementById("JLabel").innerHTML = `Ferromagnetivity Constant J: ${J}`;
+    document.getElementById("sizeLabel").innerHTML = `Substance Side Length: ${n}<br>(Updates on Reset)`;
+    document.getElementById("tempLabel").innerHTML = `Substance Temperature: ${T} Kelvin`;
+    document.getElementById("BLabel").innerHTML = `Magnetic Field Strength: ${B}`;
+
+    if (mode) {
+        document.getElementById("viewmode").innerHTML = "Toggle Viewing Mode<br>Currently Viewing Relative Energy Change";
+    } else {
+        document.getElementById("viewmode").innerHTML = "Toggle Viewing Mode<br>Currently Viewing Spin Values";
+    }
+
     ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, 100000, 100000)
     for (let i = 0; i < n; i++) {
         for (let j = 0; j < n; j++) {
             if (!mode) {
                 let spin = grid[j][i];
-                if (spin == -1) {
-                    ctx.fillStyle = "rgb(0,0,0)";
-                } else {
-                    ctx.fillStyle = "rgb(255,255,255)";
-                }
+                ctx.fillStyle = spin == -1 ? "rgb(60,0,90)" : "rgb(140,0,200)";
                 ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
             } else {
                 let pos = {x: i, y: j};
                 let energyEpsilon = getEnergyEpsilon(pos);
-                if (energyEpsilon < 0) {
-                    ctx.fillStyle = `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)`;
-                } else {
-                    ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
-                }
+                ctx.fillStyle = energyEpsilon < 0 ? `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)` : ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
                 ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
             }
         }
@@ -82,6 +85,11 @@ const displayGrid = () => {
 // metropole-hastings algorithm
 const togglePlay = () => {
     running = !running;
+    if (running) {
+        document.getElementById("play").value = "Toggle Running (On)"
+    } else {
+        document.getElementById("play").value = "Toggle Running (Off)"
+    }
 }
 
 const reset = () => {
@@ -116,22 +124,14 @@ const getEnergyEpsilon = (pos) => {
 const displayPixel = (i, j) => {
     if (!mode) {
         let spin = grid[j][i];
-        if (spin == -1) {
-            ctx.fillStyle = "rgb(0,0,0)";
-        } else {
-            ctx.fillStyle = "rgb(255,255,255)";
-        }
+        ctx.fillStyle = spin == -1 ? "rgb(60,0,90)" : "rgb(140,0,200)";
         ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
     } else {
         for (let X = i - 1; X <= i + 1; X++) {
             for (let Y = j - 1; Y <= j + 1; Y++) {
                 let pos = {x: X % n, y: Y % n};
                 let energyEpsilon = getEnergyEpsilon(pos);
-                if (energyEpsilon < 0) {
-                    ctx.fillStyle = `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)`;
-                } else {
-                    ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
-                }
+                ctx.fillStyle = energyEpsilon < 0 ? `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)` : ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
                 ctx.fillRect((X % n)*uWidth, (Y % n)*uWidth, uWidth + 1, uWidth + 1);
             }
         }
