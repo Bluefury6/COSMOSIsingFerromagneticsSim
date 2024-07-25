@@ -21,13 +21,13 @@
                 <input type="range" id="temp" min="1" max="100" value="1" step="1" onchange="displayGrid()">
 
                 <label for="J" id="JLabel">Ferromagnetivity Constant J</label>
-                <input type="range" id="J" min="-100" max="100" value="-25" step="1" onchange="displayGrid()">
+                <input type="range" id="J" min="-100" max="100" value="1" step="1" onchange="displayGrid()">
 
                 <label for="B" id="BLabel">Magnetic Field Strength</label>
-                <input type="range" id="B" min="-200" max="200" value="1" step="1" onchange="displayGrid()">
+                <input type="range" id="B" min="-200" max="200" value="0" step="1" onchange="displayGrid()">
 
                 <label for="showenergies" id="viewmode">Show Relative Energy Change</label>
-                <input type="checkbox" id="showenergies" value="true" onchange="displayGrid()">
+                <input type="checkbox" id="showenergies" onchange="displayGrid()">
             </div>
         </div>
     <script src="script.js"></script>

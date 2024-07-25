@@ -64,6 +64,12 @@ const displayGrid = () => {
         document.getElementById("viewmode").innerHTML = "Toggle Viewing Mode<br>Currently Viewing Spin Values";
     }
 
+    if (running) {
+        document.getElementById("play").value = "Toggle Running (On)"
+    } else {
+        document.getElementById("play").value = "Toggle Running (Off)"
+    }
+
     ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, 100000, 100000)
     for (let i = 0; i < n; i++) {
@@ -85,11 +91,6 @@ const displayGrid = () => {
 // metropole-hastings algorithm
 const togglePlay = () => {
     running = !running;
-    if (running) {
-        document.getElementById("play").value = "Toggle Running (On)"
-    } else {
-        document.getElementById("play").value = "Toggle Running (Off)"
-    }
 }
 
 const reset = () => {
