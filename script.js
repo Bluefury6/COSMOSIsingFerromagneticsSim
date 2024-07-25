@@ -25,7 +25,7 @@ if (screen.width >= screen.height) {
 canvas.width = width;
 canvas.height = height;
 
-let uWidth = Math.floor(width / n) + 1;
+let uWidth = Math.floor(width / n);
 
 ctx.fillStyle = "rgb(0,0,0)";
 for (let i = 0; i < n; i++) {
@@ -52,25 +52,25 @@ const addPos = (pos, pos2) => {
 
 const displayGrid = () => {
     mode = document.getElementById('showenergies').checked;
-    ctx.fillStyle = "rgb(255,255,255)";
+    ctx.fillStyle = "rgb(0, 0, 0)";
     ctx.fillRect(0, 0, 100000, 100000)
-    ctx.fillStyle = "rgb(0,0,0)";
     for (let i = 0; i < n; i++) {
         for (let j = 0; j < n; j++) {
             if (!mode) {
                 let spin = grid[j][i];
                 if (spin == -1) {
-                    ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
+                    ctx.fillStyle = "rgb(0,0,0)";
+                } else {
+                    ctx.fillStyle = "rgb(255,255,255)";
                 }
+                ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
             } else {
                 let pos = {x: i, y: j};
                 let energyEpsilon = getEnergyEpsilon(pos);
                 if (energyEpsilon < 0) {
                     ctx.fillStyle = `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)`;
-                    console.log(-colorNormalization*(energyEpsilon));
                 } else {
                     ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
-                    console.log(colorNormalization*(energyEpsilon));
                 }
                 ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
             }
@@ -86,7 +86,7 @@ const togglePlay = () => {
 const reset = () => {
     running = false;
     n = Number(document.getElementById("size").value);
-    uWidth = Math.floor(width / n) + 1;
+    uWidth = Math.floor(width / n);
 
     ctx.fillStyle = "rgb(0,0,0)";
     grid = [];
@@ -128,17 +128,15 @@ const displayPixel = (i, j) => {
         ctx.fillRect(i*uWidth, j*uWidth, uWidth + 1, uWidth + 1);
     } else {
         for (let X = i - 1; X <= i + 1; X++) {
-            for (let Y = i - 1; Y <= j + 1; Y++) {
-                let pos = {x: X, y: Y};
+            for (let Y = j - 1; Y <= j + 1; Y++) {
+                let pos = {x: X % n, y: Y % n};
                 let energyEpsilon = getEnergyEpsilon(pos);
                 if (energyEpsilon < 0) {
                     ctx.fillStyle = `rgb(${-colorNormalization*(energyEpsilon)}, 0, 0)`;
-                    console.log(-colorNormalization*(energyEpsilon));
                 } else {
                     ctx.fillStyle = `rgb(0, 0, ${colorNormalization*(energyEpsilon)})`;
-                    console.log(colorNormalization*(energyEpsilon));
                 }
-                ctx.fillRect(X*uWidth, Y*uWidth, uWidth + 1, uWidth + 1);
+                ctx.fillRect((X % n)*uWidth, (Y % n)*uWidth, uWidth + 1, uWidth + 1);
             }
         }
     }
@@ -156,7 +154,7 @@ AlgorithmLoop = setInterval(() => {
     document.getElementById("tempLabel").innerHTML = `Substance Temperature: ${T} Kelvin`;
 
     if (running) {
-        let pos = {x: Math.round((n - 1)*Math.random()), y: Math.round((n - 1)*Math.random())};
+        let pos = {x: Math.floor((n)*Math.random()), y: Math.floor((n)*Math.random())};
         let energyEpsilon = getEnergyEpsilon(pos);
 
         if (energyEpsilon < 0) {
